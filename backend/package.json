@@ -1,0 +1,39 @@
+{
+  "name": "backend_srm_credit_engine",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/Byells/SRM-Credit-Engine#readme",
+  "bugs": {
+    "url": "https://github.com/Byells/SRM-Credit-Engine/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Byells/SRM-Credit-Engine.git"
+  },
+  "license": "ISC",
+  "author": "Gabriel Lima Silva",
+  "type": "commonjs",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "nodemon src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "knex": "^3.3.0",
+    "mysql2": "^3.22.5",
+    "reflect-metadata": "^0.2.2",
+    "typedi": "^0.10.0",
+    "typeorm": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.1.0",
+    "nodemon": "^3.1.14",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^6.0.3"
+  }
+}

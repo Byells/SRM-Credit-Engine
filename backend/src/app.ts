@@ -1,5 +1,5 @@
 import express, { Express } from "express";
-import { AppDataSource } from "./config/db";
+import { AppDataSource } from "./config/db.config";
 
 export default class App {
   public app: Express;

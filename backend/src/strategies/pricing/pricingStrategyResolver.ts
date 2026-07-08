@@ -1,7 +1,7 @@
 import { PricingStrategy } from "./pricingStrategy.interface";
-import { DuplicataMercantilStrategy } from "./duplicataMercantilStrategy.strategy";
-import { ChequePreDatadoStrategy } from "./chequePreDatadoStrategy.strategy";
-import { Inject, Service } from "typedi";
+import { DuplicataMercantilStrategy } from "./duplicataMercantil.strategy";
+import { ChequePreDatadoStrategy } from "./chequePreDatado.strategy";
+import { Service } from "typedi";
 
 @Service()
 export class PricingStrategyResolver {

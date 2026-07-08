@@ -9,8 +9,9 @@
     "types": ["node"],
 
     "sourceMap": true,
-
     "strict": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,

@@ -13,6 +13,7 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
       - ./bd/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+      - ./bd/mysql.cnf:/etc/mysql/conf.d/mysql.cnf
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "${MYSQL_USER}", "-p${MYSQL_PASSWORD}"]
       interval: 5s      

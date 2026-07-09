@@ -2,6 +2,7 @@ import { Service } from "typedi";
 import { TaxaCambioRepository } from "../repositories/taxaCambio.repository";
 import { converterMoeda } from "./currencyConverter.service";
 import { EntityManager } from "typeorm";
+import { NotFoundError } from "../errors/notFound.error";
 
 @Service()
 export class CurrencyExchangeService {
@@ -24,7 +25,7 @@ export class CurrencyExchangeService {
       moedaDestinoId,
     );
     if (!taxa) {
-      throw new Error(
+      throw new NotFoundError(
         `Taxa de câmbio não encontrada para o par de moedas informado`,
       );
     }

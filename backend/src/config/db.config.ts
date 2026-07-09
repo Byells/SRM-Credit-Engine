@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import knex from "knex";
 import { DataSource } from "typeorm";
-import Container from "typedi";
+import { Container } from "typedi";
 import { TaxaBase } from "../entities/taxaBase.entity";
 import { TaxaCambio } from "../entities/taxaCambio.entity";
 import { TipoRecebivel } from "../entities/tipoRecebivel.entity";
@@ -33,8 +33,9 @@ export const knexClient = knex({
   pool: { min: 2, max: 10 },
 });
 
+Container.set("dataSource", AppDataSource);
+Container.set("knex", knexClient);
+
 export async function databaseInitialize(): Promise<void> {
   await AppDataSource.initialize();
-  Container.set("dataSource", AppDataSource);
-  Container.set("knex", knexClient);
 }

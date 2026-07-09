@@ -7,15 +7,8 @@ import { TransacaoRepository } from "../repositories/transacao.repository";
 import { CurrencyExchangeService } from "./currencyExchange.service";
 import { AuditoriaService } from "./auditoria.service";
 import { PricingStrategyResolver } from "../strategies/pricing/pricingStrategyResolver";
-
-interface CriarTransacaoInput {
-  cedenteId: number;
-  produtoId: number;
-  moedaTituloId: number;
-  moedaPagamentoId: number;
-  valorFace: string;
-  prazoMeses: number;
-}
+import { CriarTransacaoDTO } from "../dtos/transacao/criarTransacao.dto";
+import { NotFoundError } from "../errors/notFound.error";
 
 @Service()
 export class TransacaoService {
@@ -30,7 +23,7 @@ export class TransacaoService {
     private strategyResolver: PricingStrategyResolver,
   ) {}
 
-  async criar(input: CriarTransacaoInput) {
+  async criar(input: CriarTransacaoDTO) {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -40,19 +33,19 @@ export class TransacaoService {
         queryRunner.manager,
         input.cedenteId,
       );
-      if (!cedente) throw new Error("Cedente não encontrado");
+      if (!cedente) throw new NotFoundError("Cedente não encontrado");
 
       const produto = await this.tipoRecebivelRepository.buscarPorId(
         queryRunner.manager,
         input.produtoId,
       );
-      if (!produto) throw new Error("Tipo de recebível não encontrado");
+      if (!produto) throw new NotFoundError("Tipo de recebível não encontrado");
 
       const taxaBase = await this.taxaBaseRepository.buscarTaxaBase(
         queryRunner.manager,
         "Taxa Referencial",
       );
-      if (!taxaBase) throw new Error("Taxa base vigente não encontrada");
+      if (!taxaBase) throw new NotFoundError("Taxa base vigente não encontrada");
 
       const strategy = this.strategyResolver.resolver(produto.nome);
       const { valorPresente } = strategy.calcular({

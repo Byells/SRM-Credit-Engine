@@ -10,4 +10,8 @@ export class TipoRecebivelRepository {
   ): Promise<TipoRecebivel | null> {
     return manager.findOne(TipoRecebivel, { where: { id } });
   }
+
+  async listarTodos(manager: EntityManager): Promise<TipoRecebivel[]> {
+    return manager.find(TipoRecebivel);
+  }
 }

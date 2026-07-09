@@ -9,6 +9,9 @@ import { AuditoriaService } from "./auditoria.service";
 import { PricingStrategyResolver } from "../strategies/pricing/pricingStrategyResolver";
 import { CriarTransacaoDTO } from "../dtos/transacao/criarTransacao.dto";
 import { NotFoundError } from "../errors/notFound.error";
+import { BusinessRuleError } from "../errors/businessRuler.error";
+import { StatusTransacao } from "../enums/statusTransacao.enum";
+import { TAXA_BASE_REFERENCIAL } from "../constants/taxaBase.constant";
 
 @Service()
 export class TransacaoService {
@@ -43,9 +46,10 @@ export class TransacaoService {
 
       const taxaBase = await this.taxaBaseRepository.buscarTaxaBase(
         queryRunner.manager,
-        "Taxa Referencial",
+        TAXA_BASE_REFERENCIAL,
       );
-      if (!taxaBase) throw new NotFoundError("Taxa base vigente não encontrada");
+      if (!taxaBase)
+        throw new NotFoundError("Taxa base vigente não encontrada");
 
       const strategy = this.strategyResolver.resolver(produto.nome);
       const { valorPresente } = strategy.calcular({
@@ -93,6 +97,43 @@ export class TransacaoService {
 
       await queryRunner.commitTransaction();
       return transacao;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  async liquidar(id: number) {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      // Lock pessimista na linha: impede que duas liquidações concorrentes
+      // da mesma transação sejam processadas ao mesmo tempo (race condition).
+      const transacao = await this.transacaoRepository.buscarPorIdComLock(
+        queryRunner.manager,
+        id,
+      );
+      if (!transacao) throw new NotFoundError("Transação não encontrada");
+
+      if (transacao.status !== StatusTransacao.PENDENTE) {
+        throw new BusinessRuleError(
+          `Transação não pode ser liquidada: status atual é ${transacao.status}`,
+        );
+      }
+
+      const transacaoLiquidada = await this.transacaoRepository.atualizarStatus(
+        queryRunner.manager,
+        id,
+        StatusTransacao.LIQUIDADA,
+        new Date(),
+      );
+
+      await queryRunner.commitTransaction();
+      return transacaoLiquidada;
     } catch (error) {
       await queryRunner.rollbackTransaction();
       throw error;

@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { ZodType } from "zod";
 
-type FonteValidacao = "body" | "query";
+type FonteValidacao = "body" | "query" | "params";
 
 export function validate(schema: ZodType, fonte: FonteValidacao = "body") {
   return (req: Request, res: Response, next: NextFunction) => {
@@ -17,7 +17,17 @@ export function validate(schema: ZodType, fonte: FonteValidacao = "body") {
       });
     }
 
-    req[fonte] = resultado.data;
+    // Alguns campos do request (ex: `query`) podem ser getters/read-only em certos
+    // ambientes. Em vez de sobrescrever a propriedade inteira, copie os valores
+    // validados para o objeto existente quando possível. Isso evita erro:
+    // "Cannot set property query of #<IncomingMessage> which has only a getter".
+    const target = (req as any)[fonte];
+    if (target && typeof target === "object") {
+      Object.assign(target, resultado.data);
+    } else {
+      // Se não for um objeto (ex.: body inicialmente undefined), faça atribuição direta.
+      (req as any)[fonte] = resultado.data;
+    }
     next();
   };
 }

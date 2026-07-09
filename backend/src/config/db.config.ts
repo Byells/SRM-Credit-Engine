@@ -1,6 +1,13 @@
 import "reflect-metadata";
 import knex from "knex";
 import { DataSource } from "typeorm";
+import Container from "typedi";
+import { TaxaBase } from "../entities/taxaBase.entity";
+import { TaxaCambio } from "../entities/taxaCambio.entity";
+import { TipoRecebivel } from "../entities/tipoRecebivel.entity";
+import { Transacao } from "../entities/transacao.entity";
+import { Moeda } from "../entities/moeda.entity";
+import { Cedente } from "../entities/cedente.entity";
 
 export const AppDataSource = new DataSource({
   type: "mysql",
@@ -11,7 +18,7 @@ export const AppDataSource = new DataSource({
   database: process.env.DB_NAME,
   synchronize: false,
   logging: false,
-  entities: [__dirname + "/../entities/*.ts"],
+  entities: [Cedente, Moeda, TaxaBase, TaxaCambio, TipoRecebivel, Transacao],
 });
 
 export const knexClient = knex({
@@ -28,4 +35,6 @@ export const knexClient = knex({
 
 export async function databaseInitialize(): Promise<void> {
   await AppDataSource.initialize();
+  Container.set("dataSource", AppDataSource);
+  Container.set("knex", knexClient);
 }

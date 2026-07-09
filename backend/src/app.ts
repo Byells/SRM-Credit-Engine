@@ -1,5 +1,5 @@
 import express, { Express } from "express";
-import { AppDataSource } from "./config/db.config";
+import { AppDataSource, databaseInitialize } from "./config/db.config";
 
 export default class App {
   public app: Express;
@@ -24,14 +24,13 @@ export default class App {
   }
 
   public async listen() {
-    AppDataSource.initialize()
-      .then(async () => {
-        this.app.listen(this.port, async () => {
-          console.log(`Credit Engine está online em: ${this.port}`);
-        });
-      })
-      .catch((error) => {
-        console.error("Credit Engine encontrou problemas para ligar:", error);
+    try {
+      await databaseInitialize();
+      this.app.listen(this.port, async () => {
+        console.log(`Credit Engine está online em: ${this.port}`);
       });
+    } catch (error) {
+      console.error("Credit Engine encontrou problemas para ligar:", error);
+    }
   }
 }

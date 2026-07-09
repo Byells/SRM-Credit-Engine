@@ -1,0 +1,157 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Credit Engine API",
+    "description": "Motor de processamento financeiro e liquidação de recebíveis multi-moeda com persistência ACID.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3001",
+      "description": "Servidor Local"
+    }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Verifica o estado da aplicação",
+        "responses": {
+          "200": {
+            "description": "API operacional"
+          }
+        }
+      }
+    },
+    "/moedas": {
+      "get": {
+        "summary": "Lista todas as moedas suportadas",
+        "responses": {
+          "200": {
+            "description": "Lista de moedas retornada com sucesso"
+          }
+        }
+      }
+    },
+    "/cambio": {
+      "post": {
+        "summary": "Atualiza ou insere uma nova taxa de câmbio",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["moedaOrigemId", "moedaDestinoId", "valorTaxa"],
+                "properties": {
+                  "moedaOrigemId": { "type": "integer", "example": 1 },
+                  "moedaDestinoId": { "type": "integer", "example": 2 },
+                  "valorTaxa": { "type": "string", "example": "5.250000" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Taxa de câmbio atualizada" },
+          "400": {
+            "description": "Dados de entrada inválidos ou moedas iguais"
+          }
+        }
+      }
+    },
+    "/transacoes": {
+      "post": {
+        "summary": "Processa e liquida uma transação financeira (ACID)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "cedenteId",
+                  "produtoId",
+                  "moedaTituloId",
+                  "moedaPagamentoId",
+                  "valorFace",
+                  "prazoMeses"
+                ],
+                "properties": {
+                  "cedenteId": { "type": "integer", "example": 1 },
+                  "produtoId": { "type": "integer", "example": 1 },
+                  "moedaTituloId": { "type": "integer", "example": 2 },
+                  "moedaPagamentoId": { "type": "integer", "example": 1 },
+                  "valorFace": { "type": "string", "example": "10000.00" },
+                  "prazoMeses": { "type": "integer", "example": 12 }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Transação liquidada com sucesso" },
+          "400": { "description": "Erro de validação de dados" },
+          "422": { "description": "Regra de negócio violada" },
+          "404": { "description": "Entidade não encontrada" }
+        }
+      }
+    },
+    "/extrato": {
+      "get": {
+        "summary": "Consulta o extrato analítico com filtros e paginação",
+        "parameters": [
+          {
+            "name": "dataInicio",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string", "format": "date" },
+            "example": "2026-01-01"
+          },
+          {
+            "name": "dataFim",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string", "format": "date" },
+            "example": "2026-12-31"
+          },
+          {
+            "name": "cedenteId",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer" }
+          },
+          {
+            "name": "moedaPagamentoId",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer" }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["PENDENTE", "LIQUIDADA", "CANCELADA"]
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": { "type": "integer", "default": 1 }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": { "type": "integer", "default": 20 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Dados do extrato analítico gerados por Knex"
+          }
+        }
+      }
+    }
+  }
+}

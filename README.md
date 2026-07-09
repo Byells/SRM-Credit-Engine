@@ -55,6 +55,8 @@ Exemplos em `.env.example` / `backend/.env.example` / `frontend/.env.example`.
 
 ## Testes
 
+Requer `npm install` prévio em cada pasta (veja "Como rodar" acima).
+
 ```bash
 cd backend && npm test    # Vitest — regras de precificação (Strategy), conversão cambial, validação
 cd frontend && npm test   # Vitest + React Testing Library — validação, paginação, integrações

@@ -23,6 +23,9 @@ import "./services/transacao.service";
 
 // Controllers
 import "./controllers/cambio.controller";
+import "./controllers/cedente.controller";
 import "./controllers/extrato.controller";
 import "./controllers/moeda.controller";
+import "./controllers/taxaBase.controller";
+import "./controllers/tipoRecebivel.controller";
 import "./controllers/transacao.controller";

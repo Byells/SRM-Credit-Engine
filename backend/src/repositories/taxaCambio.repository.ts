@@ -14,4 +14,11 @@ export class TaxaCambioRepository {
       order: { dataTaxa: "DESC" },
     });
   }
+
+  async listarTodas(manager: EntityManager): Promise<TaxaCambio[]> {
+    return manager.find(TaxaCambio, {
+      relations: { moedaOrigem: true, moedaDestino: true },
+      order: { dataTaxa: "DESC" },
+    });
+  }
 }

@@ -7,6 +7,8 @@ import { atualizarTaxaCambioSchema } from "../dtos/cambio/atualizarTaxaCambio.dt
 const router = Router();
 const cambioController = Container.get(CambioController);
 
+router.get("/cambio", cambioController.listar);
+
 router.post(
   "/cambio",
   validate(atualizarTaxaCambioSchema, "body"),

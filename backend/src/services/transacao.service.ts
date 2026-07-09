@@ -7,15 +7,7 @@ import { TransacaoRepository } from "../repositories/transacao.repository";
 import { CurrencyExchangeService } from "./currencyExchange.service";
 import { AuditoriaService } from "./auditoria.service";
 import { PricingStrategyResolver } from "../strategies/pricing/pricingStrategyResolver";
-
-interface CriarTransacaoInput {
-  cedenteId: number;
-  produtoId: number;
-  moedaTituloId: number;
-  moedaPagamentoId: number;
-  valorFace: string;
-  prazoMeses: number;
-}
+import { CriarTransacaoDTO } from "../dtos/transacao/criarTransacao.dto";
 
 @Service()
 export class TransacaoService {
@@ -30,7 +22,7 @@ export class TransacaoService {
     private strategyResolver: PricingStrategyResolver,
   ) {}
 
-  async criar(input: CriarTransacaoInput) {
+  async criar(input: CriarTransacaoDTO) {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();

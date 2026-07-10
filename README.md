@@ -2,7 +2,7 @@
 
 Plataforma de cessão de crédito multimoedas (FIDC) — motor de precificação, conversão cambial e liquidação de recebíveis com persistência ACID.
 
-Este projeto é a entrega do [desafio técnico SRM Asset](README_case_dev_srm.md). Nível-alvo desta entrega: **Pleno** (cumulativo com os requisitos de nível Júnior).
+Este projeto é a entrega do desafio técnico SRM Asset. Nível-alvo desta entrega: **Pleno** (cumulativo com os requisitos de nível Júnior).
 
 ## Stack
 

@@ -111,3 +111,25 @@ CREATE INDEX idx_transacoes_moeda_pagamento ON tb_transacoes (moeda_pagamento_id
 -- Índice para o extrato de liquidação
 CREATE INDEX idx_transacoes_extrato
     ON tb_transacoes (data_transacao, moeda_pagamento_id, cedente_id);
+
+-- =====================================================================
+-- Dados iniciais para execução mínima do sistema
+-- =====================================================================
+
+INSERT INTO tb_moedas (id, nome, codigo) VALUES
+    (1, 'Real Brasileiro', 'BRL'),
+    (2, 'Dólar Americano', 'USD');
+
+INSERT INTO tb_tipos_recebiveis (id, nome, spread) VALUES
+    (1, 'Duplicata Mercantil', 0.0150),
+    (2, 'Cheque Pré-datado', 0.0250);
+
+INSERT INTO tb_cedentes (id, nome, cnpj, email) VALUES
+    (1, 'Empresa Exemplo SA', '12345678000195', 'contato@empresaexemplo.com');
+
+INSERT INTO tb_taxas_base (id, nome, valor) VALUES
+    (1, 'Taxa Referencial', 0.0050);
+
+INSERT INTO tb_taxas_cambio (id, moeda_origem_id, moeda_destino_id, valor_taxa) VALUES
+    (1, 1, 2, 0.000200),
+    (2, 2, 1, 5.000000);
